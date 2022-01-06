@@ -35,46 +35,6 @@ namespace Loyalty.Controllers
 
 
 
-        [HttpPost]
-        [Route("CreateUser")]
-        public async Task<IActionResult> CreateUser(CreateUserRequest req)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new CreateUserReponse()
-                {
-                    Message = "Invalid payload",
-                    Success = false
-                });
-            }
-
-            var existingUser = await _userManager.FindByNameAsync(req.Username);
-            if (existingUser != null)
-            {
-                return BadRequest(new CreateUserReponse()
-                {
-                    Message = "Username already exists",
-                    Success = false
-                });
-            }
-            var newUser = _mapper.Map<User>(req);
-            var isCreated = await _userManager.CreateAsync(newUser, req.Password);
-            var isAddRole = await _userManager.AddToRolesAsync(newUser, req.RoleNames);
-            if (isCreated.Succeeded && isAddRole.Succeeded)
-            {
-                return Ok(new CreateUserReponse()
-                {
-                    Message = "Create Success",
-                    Success = true
-                });
-            }
-            return BadRequest(new CreateUserReponse()
-            {
-                Message = "invalid password",
-                Success = false
-            });
-
-        }
 
 
         [HttpPost]
