@@ -2,12 +2,14 @@
 using Loyalty.Data.Entities;
 using Loyalty.Models.Dtos.Requests;
 using Loyalty.Models.Dtos.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Loyalty.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -49,8 +51,8 @@ namespace Loyalty.Controllers
             }
             var newUser = _mapper.Map<User>(req);
             var isCreated = await _userManager.CreateAsync(newUser, req.Password);
-            var isAddRole = await _userManager.AddToRolesAsync(newUser, req.RoleNames);
-            if (isCreated.Succeeded && isAddRole.Succeeded)
+
+            if (isCreated.Succeeded)
             {
                 return Ok(new CreateUserReponse()
                 {
@@ -63,6 +65,60 @@ namespace Loyalty.Controllers
                 Message = "invalid password",
                 Success = false
             });
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = _userManager.Users.ToList();
+            var usersReponse = _mapper.Map<List<GetUserReponse>>(users);
+            return Ok(usersReponse);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var usersReponse = _mapper.Map<GetUserReponse>(user);
+            return Ok(usersReponse);
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteById(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var isDeleted = await _userManager.DeleteAsync(user);
+            if (isDeleted.Succeeded)
+            {
+                return Ok();
+            }
+            return BadRequest("Something went wrong");
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateRole(UpdateRoleUserRequest req)
+        {
+            var user = await _userManager.FindByIdAsync(req.UserId.ToString());
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var isRemoved = await _userManager.RemoveFromRoleAsync(user, req.OldRoleName);
+            var isUpdated = await _userManager.AddToRoleAsync(user, req.NewRoleName);
+
+            if (isRemoved.Succeeded && isUpdated.Succeeded)
+            {
+                return Ok();
+            }
+            return BadRequest("Something went wrong");
 
         }
 
