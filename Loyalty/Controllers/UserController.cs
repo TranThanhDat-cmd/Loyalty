@@ -16,13 +16,16 @@ namespace Loyalty.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+        private readonly RoleManager<Role> _roleManager;
 
         public UserController(
             UserManager<User> userManager,
+            RoleManager<Role> roleManager,
             IMapper mapper)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _roleManager = roleManager;
         }
 
 
@@ -49,22 +52,26 @@ namespace Loyalty.Controllers
                     Success = false
                 });
             }
-            var newUser = _mapper.Map<User>(req);
-            var isCreated = await _userManager.CreateAsync(newUser, req.Password);
-            var isAddRole = await _userManager.AddToRoleAsync(newUser, req.RoleName);
-            if (isCreated.Succeeded)
+
+            var isRoleExist = await _roleManager.RoleExistsAsync(req.RoleName);
+            if (isRoleExist)
             {
-                return Ok(new CreateUserReponse()
+                var newUser = _mapper.Map<User>(req);
+                var isCreated = await _userManager.CreateAsync(newUser, req.Password);
+                var isAddRole = await _userManager.AddToRoleAsync(newUser, req.RoleName);
+                if (isCreated.Succeeded && isAddRole.Succeeded)
                 {
-                    Message = "Create Success",
-                    Success = true
-                });
+                    return Ok(new CreateUserReponse()
+                    {
+                        Message = "Create Success",
+                        Success = true
+                    });
+                }
             }
-            return BadRequest(new CreateUserReponse()
-            {
-                Message = "invalid password",
-                Success = false
-            });
+
+
+
+            return BadRequest("Role Name Invalid");
 
         }
 
