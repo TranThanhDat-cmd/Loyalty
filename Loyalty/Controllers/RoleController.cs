@@ -5,6 +5,7 @@ using Loyalty.Models.Dtos.Requests;
 using Loyalty.Models.Dtos.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Loyalty.Controllers
@@ -15,19 +16,20 @@ namespace Loyalty.Controllers
     public class RoleController : ControllerBase
     {
         private IMapper _mapper;
-        private IRoleRepository _repository;
 
-        public RoleController(IMapper mapper, IRoleRepository repository)
+        private RoleManager<Role> _roleManager;
+
+        public RoleController(IMapper mapper, RoleManager<Role> roleManager)
         {
             _mapper = mapper;
-            _repository = repository;
+            _roleManager = roleManager;
         }
 
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var roles = await _repository.GetAll();
+            var roles = _roleManager.Roles.ToList();
             var roleReponse = _mapper.Map<List<GetRoleReponse>>(roles);
 
             return Ok(roleReponse);
@@ -41,8 +43,11 @@ namespace Loyalty.Controllers
             }
             var role = _mapper.Map<Role>(req);
             role.Id = Guid.NewGuid();
-            var isAdded = await _repository.Add(role);
-            if (isAdded)
+
+            var isCreated = await _roleManager.CreateAsync(role);
+
+
+            if (isCreated.Succeeded)
             {
                 var roleReponse = _mapper.Map<GetRoleReponse>(role);
                 return Ok(new AddRoleReponse
@@ -58,23 +63,31 @@ namespace Loyalty.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var isDeleted = await _repository.Detele(id);
-            if (isDeleted)
+            var role = await _roleManager.FindByIdAsync(id.ToString());
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            var isDeleted = await _roleManager.DeleteAsync(role);
+            if (isDeleted.Succeeded)
             {
                 return Ok();
             }
-            return BadRequest();
+            return BadRequest("Something went wrong");
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var role = await _repository.GetById(id);
+            var role = await _roleManager.FindByIdAsync(id.ToString());
             if (role == null)
             {
                 return NotFound();
             }
-            return Ok(role);
+
+            var roleReponse = _mapper.Map<GetRoleReponse>(role);
+            return Ok(roleReponse);
         }
 
         [HttpPut]
@@ -84,9 +97,13 @@ namespace Loyalty.Controllers
             {
                 return BadRequest();
             }
-            var role = _mapper.Map<Role>(req);
-            var isUpdated = await _repository.Update(role);
-            if (isUpdated)
+            var role = await _roleManager.FindByIdAsync(req.Id.ToString());
+            _mapper.Map<UpdateRoleRequest, Role>(req, role);
+
+            var isUpdated = await _roleManager.UpdateAsync(role);
+
+
+            if (isUpdated.Succeeded)
             {
                 return NoContent();
             }

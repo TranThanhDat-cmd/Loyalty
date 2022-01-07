@@ -15,6 +15,8 @@ namespace Loyalty.Models.Dtos.Requests
         public string LastName { get; set; }
         [Required]
         public string FirstName { get; set; }
+        public string RoleName { get; set; }
+
 
     }
 }

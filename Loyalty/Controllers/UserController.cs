@@ -51,7 +51,7 @@ namespace Loyalty.Controllers
             }
             var newUser = _mapper.Map<User>(req);
             var isCreated = await _userManager.CreateAsync(newUser, req.Password);
-
+            var isAddRole = await _userManager.AddToRoleAsync(newUser, req.RoleName);
             if (isCreated.Succeeded)
             {
                 return Ok(new CreateUserReponse()
