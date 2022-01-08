@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Loyalty.Models.Dtos.Requests
+namespace Loyalty.Models.Dtos.Requests.Role
 {
     public class UpdateRoleRequest
     {

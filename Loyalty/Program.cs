@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Loyalty.Configuration;
-using Loyalty.Core.IRepositories;
-using Loyalty.Core.Repositories;
+
 using Loyalty.Data;
 using Loyalty.Data.Entities;
 using Loyalty.Services;
@@ -82,7 +81,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 // add DI repository
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
 
 
 // Di automapper

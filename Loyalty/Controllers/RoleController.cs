@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Loyalty.Core.IRepositories;
 using Loyalty.Data.Entities;
-using Loyalty.Models.Dtos.Requests;
-using Loyalty.Models.Dtos.Responses;
+using Loyalty.Models.Dtos.Requests.Role;
+using Loyalty.Models.Dtos.Responses.Role;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +30,7 @@ namespace Loyalty.Controllers
         public async Task<IActionResult> GetAll()
         {
             var roles = _roleManager.Roles.ToList();
-            var roleReponse = _mapper.Map<List<GetRoleReponse>>(roles);
+            var roleReponse = _mapper.Map<List<RoleReponse>>(roles);
 
             return Ok(roleReponse);
         }
@@ -49,7 +49,7 @@ namespace Loyalty.Controllers
 
             if (isCreated.Succeeded)
             {
-                var roleReponse = _mapper.Map<GetRoleReponse>(role);
+                var roleReponse = _mapper.Map<RoleReponse>(role);
                 return Ok(new AddRoleReponse
                 {
                     Data = roleReponse,
@@ -86,7 +86,7 @@ namespace Loyalty.Controllers
                 return NotFound();
             }
 
-            var roleReponse = _mapper.Map<GetRoleReponse>(role);
+            var roleReponse = _mapper.Map<RoleReponse>(role);
             return Ok(roleReponse);
         }
 

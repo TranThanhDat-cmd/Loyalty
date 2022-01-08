@@ -1,6 +1,6 @@
-﻿namespace Loyalty.Models.Dtos.Responses
+﻿namespace Loyalty.Models.Dtos.Responses.Role
 {
-    public class GetRoleReponse
+    public class RoleReponse
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Loyalty.Data.Entities;
-using Loyalty.Models.Dtos.Requests;
-using Loyalty.Models.Dtos.Responses;
+using Loyalty.Models.Dtos.Requests.Role;
+using Loyalty.Models.Dtos.Requests.User;
+using Loyalty.Models.Dtos.Responses.Role;
+using Loyalty.Models.Dtos.Responses.User;
 
 namespace Loyalty.Services
 {
@@ -10,10 +12,10 @@ namespace Loyalty.Services
         public MappingProfile()
         {
             CreateMap<CreateUserRequest, User>();
-            CreateMap<User, GetUserReponse>();
+            CreateMap<User, UserReponse>();
             CreateMap<AddRoleRequest, Role>();
 
-            CreateMap<Role, GetRoleReponse>();
+            CreateMap<Role, RoleReponse>();
             CreateMap<UpdateRoleRequest, Role>();
 
 

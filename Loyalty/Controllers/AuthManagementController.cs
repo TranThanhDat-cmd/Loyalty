@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using Loyalty.Data.Entities;
 using Loyalty.Configuration;
 using Microsoft.Extensions.Options;
-using Loyalty.Models.Dtos.Requests;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using Loyalty.Models.Dtos.Responses;
+
 using AutoMapper;
+using Loyalty.Models.Dtos.Requests.Auth;
 
 namespace Loyalty.Controllers
 {

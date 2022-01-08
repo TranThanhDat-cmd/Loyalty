@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
+using Loyalty.Data;
 using Loyalty.Data.Entities;
-using Loyalty.Models.Dtos.Requests;
-using Loyalty.Models.Dtos.Responses;
+using Loyalty.Models.Dtos.Requests.User;
+using Loyalty.Models.Dtos.Responses.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Loyalty.Controllers
 {
@@ -18,6 +20,7 @@ namespace Loyalty.Controllers
         private readonly IMapper _mapper;
         private readonly RoleManager<Role> _roleManager;
 
+
         public UserController(
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
@@ -26,6 +29,7 @@ namespace Loyalty.Controllers
             _userManager = userManager;
             _mapper = mapper;
             _roleManager = roleManager;
+
         }
 
 
@@ -79,7 +83,7 @@ namespace Loyalty.Controllers
         public async Task<IActionResult> GetAll()
         {
             var users = _userManager.Users.ToList();
-            var usersReponse = _mapper.Map<List<GetUserReponse>>(users);
+            var usersReponse = _mapper.Map<List<UserReponse>>(users);
             return Ok(usersReponse);
         }
         [HttpGet("{id}")]
@@ -90,7 +94,7 @@ namespace Loyalty.Controllers
             {
                 return NotFound();
             }
-            var usersReponse = _mapper.Map<GetUserReponse>(user);
+            var usersReponse = _mapper.Map<UserReponse>(user);
             return Ok(usersReponse);
         }
         [HttpDelete]

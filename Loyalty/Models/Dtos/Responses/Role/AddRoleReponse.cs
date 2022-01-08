@@ -1,4 +1,4 @@
-﻿namespace Loyalty.Models.Dtos.Responses
+﻿namespace Loyalty.Models.Dtos.Responses.Role
 {
     public class AddRoleReponse
     {
