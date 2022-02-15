@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
-using Loyalty.Core.IRepositories;
 using Loyalty.Data.Entities;
 using Loyalty.Models.Dtos.Requests.Role;
 using Loyalty.Models.Dtos.Responses.Role;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Loyalty.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase

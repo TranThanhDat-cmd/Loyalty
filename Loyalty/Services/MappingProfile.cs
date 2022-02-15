@@ -14,11 +14,8 @@ namespace Loyalty.Services
             CreateMap<CreateUserRequest, User>();
             CreateMap<User, UserReponse>();
             CreateMap<AddRoleRequest, Role>();
-
             CreateMap<Role, RoleReponse>();
             CreateMap<UpdateRoleRequest, Role>();
-
-
         }
     }
 }

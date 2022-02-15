@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Loyalty.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -77,6 +77,32 @@ namespace Loyalty.Controllers
 
             return BadRequest("Role Name Invalid");
 
+        }
+
+
+        [HttpPost]
+        [Route("AddRoleUser")]
+        public async Task<IActionResult> AddRoleUser(AddRoleUserRequest req)
+        {
+            if (ModelState.IsValid)
+            {
+                var isRoleExist = await _roleManager.RoleExistsAsync(req.RoleName);
+                var user = await _userManager.FindByIdAsync(req.UserId.ToString());
+                if (isRoleExist && user != null)
+                {
+                    var isAddRole = await _userManager.AddToRoleAsync(user, req.RoleName);
+                    if (isAddRole.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    return BadRequest("Something went wrong");
+                }
+
+                return NotFound("Role or user is not exist");
+
+
+            }
+            return BadRequest();
         }
 
         [HttpGet]
