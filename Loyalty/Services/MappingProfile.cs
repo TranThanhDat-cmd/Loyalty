@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Loyalty.Data.Entities;
+using Loyalty.Models.Dtos.Requests.Auth;
 using Loyalty.Models.Dtos.Requests.Role;
 using Loyalty.Models.Dtos.Requests.User;
 using Loyalty.Models.Dtos.Responses.Role;
@@ -16,6 +17,7 @@ namespace Loyalty.Services
             CreateMap<AddRoleRequest, Role>();
             CreateMap<Role, RoleReponse>();
             CreateMap<UpdateRoleRequest, Role>();
+            CreateMap<UserRegisterRequest, User>();
         }
     }
 }

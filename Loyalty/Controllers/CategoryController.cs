@@ -1,7 +1,6 @@
 ﻿using Loyalty.Data;
 using Loyalty.Data.Entities;
 using Loyalty.Models.Dtos.Requests.Category;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Loyalty.Controllers

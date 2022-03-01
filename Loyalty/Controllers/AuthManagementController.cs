@@ -32,11 +32,6 @@ namespace Loyalty.Controllers
         }
 
 
-
-
-
-
-
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest req)
@@ -91,14 +86,66 @@ namespace Loyalty.Controllers
 
         }
 
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> Register(UserRegisterRequest req)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new AuthResult()
+                {
+                    Errors = new List<string>()
+                    {
+                        "Invalid payload"
+                    },
+                    Success = false
+                });
+            }
+            var existingEmail = await _userManager.FindByEmailAsync(req.Email);
+            if (existingEmail != null)
+            {
+                return BadRequest(new AuthResult()
+                {
+                    Errors = new List<string>()
+                    {
+                        "Existing Email"
+                    },
+                    Success = false
+                });
+            }
+
+            var newUser = _mapper.Map<User>(req);
+
+            var isCreated = await _userManager.CreateAsync(newUser, req.Password);
+
+            if (isCreated.Succeeded)
+            {
+                return Ok(new AuthResult()
+                {
+                    Success = true,
+                    Token = GenerateJwtToken(newUser)
+                });
+            }
+
+            return BadRequest(new AuthResult()
+            {
+                Errors = new List<string>()
+                    {
+                        "Existing Email"
+                    },
+                Success = false
+            });
+        }
         private string GenerateJwtToken(User user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var secretKey = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
+                // user infor
                 Subject = new ClaimsIdentity(new[]
                 {
+                    //1 claim = 1 user infor 
                     new Claim("Id",user.Id.ToString()),
                     new Claim(JwtRegisteredClaimNames.Email,user.Email),
                     new Claim(JwtRegisteredClaimNames.Sub,user.Email),

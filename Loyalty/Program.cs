@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Loyalty.Configuration;
-
 using Loyalty.Data;
 using Loyalty.Data.Entities;
 using Loyalty.Services;
@@ -17,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-// mapping appsetting with obj introduced in .net 3.1
+// mapping appsetting with obj 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
 
@@ -94,16 +93,11 @@ IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 
-// add user manager
+// add user manager and role manager
 builder.Services.AddDefaultIdentity<User>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
 }).AddRoles<Role>().AddEntityFrameworkStores<MyDbContext>();
-
-
-
-
-
 
 
 var app = builder.Build();
@@ -116,6 +110,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Loyalty.Controllers
 {
-    //[Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
