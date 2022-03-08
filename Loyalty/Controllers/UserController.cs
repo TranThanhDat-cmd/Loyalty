@@ -3,6 +3,7 @@ using Loyalty.Data;
 using Loyalty.Data.Entities;
 using Loyalty.Models.Dtos.Requests.User;
 using Loyalty.Models.Dtos.Responses.User;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Loyalty.Controllers
 {
-    //[Authorize(AuthenticationSchemes = "Bearer")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
