@@ -1,9 +1,10 @@
 ﻿using Loyalty.Core.IRepositories;
 using Loyalty.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Loyalty.Core.Repositories
 {
-    public class GennericRepository<TEntity> : IGennericRepository<TEntity>
+    public class GennericRepository<T> : IGennericRepository<T> where T : class
     {
         private MyDbContext _context;
 
@@ -11,39 +12,30 @@ namespace Loyalty.Core.Repositories
         {
             _context = context;
         }
-        public async Task<bool> Add(TEntity entity)
-        {
-            try
-            {
-                await _context.AddAsync(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
 
+        public async Task<T> Get(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
         }
 
-        public Task<bool> Detele(object id)
+        public async Task<IEnumerable<T>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Set<T>().ToListAsync();
         }
 
-        public Task<List<TEntity>> GetAll()
+        public async Task Add(T entity)
         {
-            throw new NotImplementedException();
+            await _context.Set<T>().AddAsync(entity);
         }
 
-        public Task<TEntity> GetById(object id)
+        public void Delete(T entity)
         {
-            throw new NotImplementedException();
+            _context.Set<T>().Remove(entity);
         }
 
-        public Task<bool> Update(TEntity entity)
+        public void Update(T entity)
         {
-            throw new NotImplementedException();
+            _context.Set<T>().Update(entity);
         }
     }
 }

@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-
 using AutoMapper;
 using Loyalty.Models.Dtos.Requests.Auth;
 using Loyalty.Data;
@@ -35,7 +34,8 @@ namespace Loyalty.Controllers
             _userManager = userManager;
             _jwtConfig = optionsMonitor.CurrentValue;
             _mapper = mapper;
-            _tokenValidationParameters = tokenValidationParameters;
+            _tokenValidationParameters = tokenValidationParameters.Clone();
+            _tokenValidationParameters.ValidateLifetime = false;
             _context = context;
         }
 
@@ -279,28 +279,16 @@ namespace Loyalty.Controllers
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("Lifetime validation failed. The token is expired."))
+                return new AuthResult()
                 {
+                    Success = false,
+                    Errors = new List<string>() {
+                        "Something went wrong."
+                    }
 
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>() {
-                            "Token has expired please re-login"
-                        }
-                    };
 
-                }
-                else
-                {
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>() {
-                            "Something went wrong."
-                        }
-                    };
-                }
+                };
+
             }
         }
 
@@ -330,7 +318,7 @@ namespace Loyalty.Controllers
 
                     // Role
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(10),
+                Expires = DateTime.UtcNow.AddSeconds(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);

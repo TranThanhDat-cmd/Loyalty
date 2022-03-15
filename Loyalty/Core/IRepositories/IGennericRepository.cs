@@ -3,12 +3,12 @@
 namespace Loyalty.Core.IRepositories
 
 {
-    public interface IGennericRepository<TEntity>
+    public interface IGennericRepository<T> where T : class
     {
-        Task<List<TEntity>> GetAll();
-        Task<TEntity> GetById(object id);
-        Task<bool> Add(TEntity entity);
-        Task<bool> Detele(object id);
-        Task<bool> Update(TEntity entity);
+        Task<T> Get(int id);
+        Task<IEnumerable<T>> GetAll();
+        Task Add(T entity);
+        void Delete(T entity);
+        void Update(T entity);
     }
 }

@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Loyalty.Configuration;
+using Loyalty.Core.IConffiguration;
+using Loyalty.Core.IRepositories;
+using Loyalty.Core.Repositories;
 using Loyalty.Data;
 using Loyalty.Data.Entities;
 using Loyalty.Services;
@@ -71,8 +74,9 @@ TokenValidationParameters tokenValidationParameters = new TokenValidationParamet
     IssuerSigningKey = new SymmetricSecurityKey(secretKey),
 
 
-    ValidateLifetime = true,
-    RequireExpirationTime = true
+    //ClockSkew = TimeSpan.Zero, // default 5 min
+    //ValidateLifetime = false //check expirer
+
 };
 
 builder.Services.AddSingleton(tokenValidationParameters);
@@ -108,6 +112,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 // add DI repository
 
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 // Di automapper

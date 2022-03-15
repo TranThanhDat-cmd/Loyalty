@@ -1,4 +1,5 @@
-﻿using Loyalty.Data;
+﻿using Loyalty.Core.IConffiguration;
+using Loyalty.Data;
 using Loyalty.Data.Entities;
 using Loyalty.Models.Dtos.Requests.Category;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,24 +13,24 @@ namespace Loyalty.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CategoryController : ControllerBase
     {
-        private MyDbContext _context;
+        private IUnitOfWork _unitOfWork;
 
-        public CategoryController(MyDbContext myDbContext)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _context = myDbContext;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var listCategory = _context.Categories;
-            return Ok(listCategory);
+            var categories = await _unitOfWork.Categories.GetAll();
+            return Ok(categories);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetByID(int id)
+        public async Task<IActionResult> GetByID(int id)
         {
-            var category = _context.Categories.SingleOrDefault(c => c.Id == id);
+            var category = await _unitOfWork.Categories.Get(id);
             if (category == null)
             {
                 return NotFound();
@@ -38,7 +39,7 @@ namespace Loyalty.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(AddCategoryRequest req)
+        public async Task<IActionResult> Create(AddCategoryRequest req)
         {
             try
             {
@@ -50,8 +51,8 @@ namespace Loyalty.Controllers
                     Status = req.Status,
 
                 };
-                _context.Add(category);
-                _context.SaveChanges();
+                await _unitOfWork.Categories.Add(category);
+                await _unitOfWork.CompleteAsync();
                 return StatusCode(StatusCodes.Status201Created, category);
             }
             catch (Exception ex)
@@ -62,10 +63,10 @@ namespace Loyalty.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, UpdateCategoryRequest req)
+        public async Task<IActionResult> Update(int id, UpdateCategoryRequest req)
         {
 
-            var dbCategory = _context.Categories.SingleOrDefault(c => c.Id == id);
+            var dbCategory = await _unitOfWork.Categories.Get(req.Id);
             if (dbCategory == null)
             {
                 return NotFound();
@@ -74,20 +75,21 @@ namespace Loyalty.Controllers
             dbCategory.IsShowOnHome = false;
             dbCategory.Status = req.Status;
 
-            _context.SaveChanges();
+            await _unitOfWork.CompleteAsync();
+
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Remove(int id)
+        public async Task<IActionResult> Remove(int id)
         {
-            var dbCategory = _context.Categories.SingleOrDefault(c => c.Id == id);
+            var dbCategory = await _unitOfWork.Categories.Get(id);
             if (dbCategory == null)
             {
                 return NotFound();
             }
-            _context.Categories.Remove(dbCategory);
-            _context.SaveChanges();
+            _unitOfWork.Categories.Delete(dbCategory);
+            await _unitOfWork.CompleteAsync();
             return StatusCode(StatusCodes.Status202Accepted);
         }
     }
