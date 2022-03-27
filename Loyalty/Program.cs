@@ -13,11 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-
-
-
 var builder = WebApplication.CreateBuilder(args);
-
 
 
 // mapping appsetting with obj 
@@ -114,7 +110,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IStorageService, FileStorageService>();
 
 
 // Di automapper

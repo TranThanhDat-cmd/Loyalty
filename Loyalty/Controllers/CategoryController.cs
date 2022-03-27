@@ -20,6 +20,7 @@ namespace Loyalty.Controllers
             _unitOfWork = unitOfWork;
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

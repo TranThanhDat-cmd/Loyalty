@@ -6,6 +6,7 @@ namespace Loyalty.Core.IConffiguration
     {
         ICategoryRepository Categories { get; }
         IProductRepository Products { get; }
+        IProductImageRepository ProductImages { get; }
         Task CompleteAsync();
     }
 }

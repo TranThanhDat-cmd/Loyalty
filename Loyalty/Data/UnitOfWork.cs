@@ -9,6 +9,7 @@ namespace Loyalty.Data
         public ICategoryRepository Categories { get; }
 
         public IProductRepository Products { get; }
+        public IProductImageRepository ProductImages { get; }
 
         private readonly MyDbContext _context;
 

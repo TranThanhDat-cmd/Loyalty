@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Loyalty.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20220307140248_AddTableRefreshToken")]
-    partial class AddTableRefreshToken
+    [Migration("20220315060858_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,7 +51,10 @@ namespace Loyalty.Migrations
             modelBuilder.Entity("Loyalty.Data.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -84,6 +87,8 @@ namespace Loyalty.Migrations
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products", (string)null);
                 });
@@ -341,7 +346,7 @@ namespace Loyalty.Migrations
                 {
                     b.HasOne("Loyalty.Data.Entities.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

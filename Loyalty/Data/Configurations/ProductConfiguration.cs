@@ -22,7 +22,7 @@ namespace Loyalty.Data.Configurations
 
             builder.Property(x => x.ViewCount).IsRequired().HasDefaultValue(0);
 
-            builder.HasOne(x => x.Category).WithMany(x => x.Products).HasForeignKey(x => x.Id);
+            builder.HasOne(x => x.Category).WithMany(x => x.Products).HasForeignKey(x => x.CategoryId);
         }
     }
 }
